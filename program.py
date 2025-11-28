@@ -187,6 +187,48 @@ sh_seedbuttons.pack(side='top') # Buttons for Plus/Minus Targets
 
 listoftargets[keystring].pack(side='top')
 
+#export inventory as csv
+def exporttargets():
+    global listoftargets
+    with open('sh_targets.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for key in listoftargets:
+            writer.writerow([str(listoftargets[key].get())])
+
+sh_exportTargets = ttk.Button(sh_targetseeds,
+                                text="Export Targets",
+                                command=exporttargets)
+sh_exportTargets.pack(side='bottom')
+#import inventory as csv
+def importtargets():
+    global listoftargets
+
+    with open('sh_targets.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = list(reader)
+
+    # Adjust number of comboboxes to match number of rows
+    current = len(listoftargets)
+    needed = len(rows)
+
+    # If we need more widgets, add them
+    for _ in range(needed - current):
+        increasetargetsize()
+
+    # If we have too many, remove extras
+    for _ in range(current - needed):
+        decreasetargetsize()
+
+    # Make sure we don't unpack more rows than we have widgets
+    for combo, row in zip(listoftargets.values(), rows):
+        combo.delete(0, tk.END)
+        if row:
+            combo.insert(tk.END, row[0])
+
+sh_importTargets = ttk.Button(sh_targetseeds,
+                                text="Import Targets",
+                                command=importtargets)
+sh_importTargets.pack(side='bottom')
 sh_targetseeds.pack(side='right')
 
 def calculateseeds(): # Function for "Calculate Output" button

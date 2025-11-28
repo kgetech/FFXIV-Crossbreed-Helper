@@ -1,3 +1,4 @@
 venv/
 .idea/
 sh_inventory.csv
+sh_targets.csv
