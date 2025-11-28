@@ -113,6 +113,7 @@ sh_exportInventory = ttk.Button(sh_inventory,
                                 text="Export Inventory",
                                 command=exportinventory)
 sh_exportInventory.pack(side='bottom')
+
 #import inventory as csv
 def importinventory():
     global sh_listofseeds
@@ -199,6 +200,7 @@ sh_exportTargets = ttk.Button(sh_targetseeds,
                                 text="Export Targets",
                                 command=exporttargets)
 sh_exportTargets.pack(side='bottom')
+
 #import inventory as csv
 def importtargets():
     global listoftargets
@@ -409,6 +411,50 @@ all_minusbutton = ttk.Button(all_buttons,
 all_minusbutton.pack(side='left')
 all_buttons.pack(side='top') # Buttons to increase/decrease size of Inventory
 all_listofseeds[keystring].pack(side='top')
+
+#export inventory as csv
+def exportinventory():
+    global all_listofseeds
+    with open('all_inventory.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for key in all_listofseeds:
+            writer.writerow([str(all_listofseeds[key].get())])
+
+all_exportInventory = ttk.Button(all_inventory,
+                                text="Export Inventory",
+                                command=exportinventory)
+all_exportInventory.pack(side='bottom')
+
+#import inventory as csv
+def importinventory():
+    global all_listofseeds
+
+    with open('all_inventory.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = list(reader)
+
+    # Adjust number of comboboxes to match number of rows
+    current = len(all_listofseeds)
+    needed = len(rows)
+
+    # If we need more widgets, add them
+    for _ in range(needed - current):
+        all_increaseinventorysize()
+
+    # If we have too many, remove extras
+    for _ in range(current - needed):
+        all_decreaseinventorysize()
+
+    # Make sure we don't unpack more rows than we have widgets
+    for combo, row in zip(all_listofseeds.values(), rows):
+        combo.delete(0, tk.END)
+        if row:
+            combo.insert(tk.END, row[0])
+
+all_importInventory = ttk.Button(all_inventory,
+                                text="Import Inventory",
+                                command=importinventory)
+all_importInventory.pack(side='bottom')
 
 all_inventory.pack(side='left')
 
