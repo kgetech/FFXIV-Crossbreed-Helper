@@ -42,7 +42,7 @@ Also, tell others about this program! I hope to help as many people as possible,
 # NEW FEATURES! by kgetech:
 
 ## A Quit Button:
-- Added a quit button to the program (Oooh, fancy!)
+- Added a quit button to the program (Oooh, fancy!).
 
 ## Export and Import Options:
 - Added export and import buttons for "Shortest Path" Inventory and Targets.
