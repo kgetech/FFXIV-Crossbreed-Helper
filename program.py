@@ -488,5 +488,8 @@ notebook.add(gatherseeds, text="Which seeds do you need to gather for a target"
                                " seed?")
 
 notebook.pack()
+quitBtn = ttk.Button(root, text="Quit", command=root.quit)
+quitBtn.pack(side="bottom", anchor="e",padx=10, pady=10)
+
 
 root.mainloop()
