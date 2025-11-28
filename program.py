@@ -2,6 +2,7 @@ import json
 import tkinter as tk
 from tkinter import ttk
 from functions import *
+import csv
 
 with open("_internal/importantfiles/seeds.json", "r", encoding = "utf-8") as sfpr:
     seeds = json.load(sfpr)
@@ -88,6 +89,7 @@ def decreaseinventorysize(): # Function for the Minus Button
         sh_listofseeds[keystring].pack_forget()
         del sh_listofseeds[keystring]
 
+
 sh_plusbutton = ttk.Button(sh_buttons,
                            text="+",
                            command=increaseinventorysize)
@@ -99,6 +101,48 @@ sh_minusbutton.pack(side='left')
 sh_buttons.pack(side='top') # Buttons to increase/decrease size of Inventory
 sh_listofseeds[keystring].pack(side='top')
 
+#export inventory as csv
+def exportinventory():
+    global sh_listofseeds
+    with open('sh_inventory.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for key in sh_listofseeds:
+            writer.writerow([str(sh_listofseeds[key].get())])
+
+sh_exportInventory = ttk.Button(sh_inventory,
+                                text="Export Inventory",
+                                command=exportinventory)
+sh_exportInventory.pack(side='bottom')
+#import inventory as csv
+def importinventory():
+    global sh_listofseeds
+
+    with open('sh_inventory.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = list(reader)
+
+    # Adjust number of comboboxes to match number of rows
+    current = len(sh_listofseeds)
+    needed = len(rows)
+
+    # If we need more widgets, add them
+    for _ in range(needed - current):
+        increaseinventorysize()
+
+    # If we have too many, remove extras
+    for _ in range(current - needed):
+        decreaseinventorysize()
+
+    # Make sure we don't unpack more rows than we have widgets
+    for combo, row in zip(sh_listofseeds.values(), rows):
+        combo.delete(0, tk.END)
+        if row:
+            combo.insert(tk.END, row[0])
+
+sh_importInventory = ttk.Button(sh_inventory,
+                                text="Import Inventory",
+                                command=importinventory)
+sh_importInventory.pack(side='bottom')
 
 sh_inventory.pack(side='left')
 
@@ -488,8 +532,9 @@ notebook.add(gatherseeds, text="Which seeds do you need to gather for a target"
                                " seed?")
 
 notebook.pack()
+
+# Quit the program
 quitBtn = ttk.Button(root, text="Quit", command=root.quit)
 quitBtn.pack(side="bottom", anchor="e",padx=10, pady=10)
-
 
 root.mainloop()
